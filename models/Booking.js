@@ -1,11 +1,17 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db.js");
 
-module.exports = sequelize.define("bookings", {
+const Booking = sequelize.define("bookings", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+  },
+  customer: {
+    type: DataTypes.STRING,
+  },
+  orderId: {
+    type: DataTypes.INTEGER,
   },
   date: {
     type: DataTypes.DATE,
@@ -13,10 +19,6 @@ module.exports = sequelize.define("bookings", {
   participanNumber: {
     type: DataTypes.INTEGER,
   },
-  reservationId: {
-    type: DataTypes.INTEGER,
-  },
-  orderedId: {
-    type: DataTypes.INTEGER,
-  },
 });
+
+module.exports = Booking;

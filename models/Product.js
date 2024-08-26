@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db.js");
 
 module.exports = sequelize.define("products", {
   id: {
@@ -13,13 +13,16 @@ module.exports = sequelize.define("products", {
   productName: {
     type: DataTypes.STRING,
   },
+  allergenIngredients: {
+    type: DataTypes.STRING,
+  },
   description: {
     type: DataTypes.STRING,
   },
-  available: {
-    type: DataTypes.BOOLEAN,
-  },
   price: {
     type: DataTypes.INTEGER,
+  },
+  available: {
+    type: DataTypes.BOOLEAN,
   },
 });

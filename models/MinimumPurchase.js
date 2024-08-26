@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db.js");
 
 module.exports = sequelize.define("minimum_purchase", {
   id: {
@@ -7,7 +7,7 @@ module.exports = sequelize.define("minimum_purchase", {
     autoIncrement: true,
     primaryKey: true,
   },
-  participans: {
+  participants: {
     type: DataTypes.INTEGER,
   },
   minimumPurchase: {

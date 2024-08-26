@@ -1,25 +1,36 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db.js");
 
-module.exports = sequelize.define("orders", {
+const Booking = require("./Booking.js");
+const Reservation = require("./Reservation.js");
+
+const Order = sequelize.define("orders", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  status: {
-    type: DataTypes.STRING,
+  bookingId: {
+    type: DataTypes.INTEGER,
   },
-  productId: {
-    type: DataTypes.STRING,
-  },
-  quantity: {
-    type: DataTypes.STRING,
-  },
-  lineTotal: {
+  reservationId: {
     type: DataTypes.INTEGER,
   },
   invoiceId: {
     type: DataTypes.INTEGER,
   },
+  status: {
+    type: DataTypes.STRING,
+  },
+  purchaseDetail: {
+    type: DataTypes.STRING,
+  },
+  lineTotal: {
+    type: DataTypes.INTEGER,
+  },
 });
+
+Order.hasOne(Booking);
+Order.hasOne(Reservation);
+
+module.exports = Order;

@@ -1,28 +1,34 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db.js");
 
-module.exports = sequelize.define("invoices", {
+const Order = require("./Order.js");
+
+const Invoice = sequelize.define("invoices", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
+  orderId: {
+    type: DataTypes.INTEGER,
+  },
   date: {
     type: DataTypes.DATE,
   },
-  productId: {
+  purchaseDetail: {
     type: DataTypes.STRING,
   },
-  quantity: {
+  discount: {
     type: DataTypes.STRING,
   },
-  taxId: {
-    type: DataTypes.STRING,
-  },
-  discountId: {
+  tax: {
     type: DataTypes.STRING,
   },
   totalAmount: {
     type: DataTypes.INTEGER,
   },
 });
+
+Invoice.hasOne(Order);
+
+module.exports = { Invoice };

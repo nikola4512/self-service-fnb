@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db.js");
 
 module.exports = sequelize.define("tables", {
   id: {
@@ -7,7 +7,16 @@ module.exports = sequelize.define("tables", {
     autoIncrement: true,
     primaryKey: true,
   },
-  areaName: {
+  areaId: {
+    type: DataTypes.INTEGER,
+  },
+  tableName: {
+    type: DataTypes.STRING,
+  },
+  seatNumber: {
+    type: DataTypes.INTEGER,
+  },
+  status: {
     type: DataTypes.STRING,
   },
 });

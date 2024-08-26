@@ -1,16 +1,19 @@
 const express = require("express");
-const passport = require("passport");
 const session = require("express-session");
-const authRoutes = require("./routes/auth");
-const dashboardRoutes = require("./routes/dashboard");
+const expressLayouts = require("express-ejs-layouts");
+const passport = require("passport");
 const db = require("./db.js");
 const { init: initAuth } = require("./auth");
+const customerRoutes = require("./routes/customer.js");
+const authRoutes = require("./routes/auth");
+const dashboardRoutes = require("./routes/dashboard.js");
 
 const app = express();
 const PORT = 8080;
 
 app.use(express.urlencoded({ extended: false }));
-app.set("view engine", "pug");
+app.set("view engine", "ejs");
+app.use(expressLayouts);
 
 initAuth();
 app.use(
@@ -24,12 +27,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use("/", customerRoutes);
 app.use("/", authRoutes);
 app.use("/", dashboardRoutes);
 
-db.sync({ force: false })
-  .then(() => {
-    console.log("Database & tables created!");
-    app.listen(PORT, console.log("Server is running on port: " + PORT));
-  })
-  .catch((err) => console.error("Error syncing the database:", err));
+app.listen(PORT, console.log("Server is running on: http://localhost:" + PORT));

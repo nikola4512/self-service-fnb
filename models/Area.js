@@ -1,19 +1,22 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("./sequelize");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../db.js");
 
-module.exports = sequelize.define("areas", {
+const Table = require("./Table.js");
+
+const Area = sequelize.define("areas", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  areaId: {
-    type: DataTypes.INTEGER,
-  },
-  tableName: {
+  // tableId: {
+  //   type: DataTypes.INTEGER,
+  // },
+  areaName: {
     type: DataTypes.STRING,
   },
-  seatNumber: {
-    type: DataTypes.INTEGER,
-  },
 });
+
+Area.hasMany(Table);
+
+module.exports = Area;
