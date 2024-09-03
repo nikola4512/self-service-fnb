@@ -1,0 +1,25 @@
+<div class="container">
+  <h1 class="text-center py-1">Menu</h1>
+  <div class="container pt-4 border-top">
+    <div class="row">
+      <% products.forEach(product => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img
+            src="<%= product.imageUrl %>"
+            class="card-img-top img-fluid"
+            alt="Image 1"
+            style="object-fit: cover; max-height: 35vh"
+          />
+          <div class="card-body rounded-bottom" style="background-color: gray">
+            <div class="d-flex justify-content-between">
+              <h5 class="card-title"><%= product.productName %></h5>
+              <h5 style="font-weight: 100">Rp <%= product.price / 1000 %>rb</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</div>

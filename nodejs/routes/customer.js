@@ -1,11 +1,12 @@
 const express = require("express");
 const customerController = require("../controllers/customer");
-// const { protectRoute } = require("../auth");
 
 const router = express.Router();
 
-router.get("/", customerController.customerDashboardView);
+router.get("/", customerController.mainView);
+router.get("/home", customerController.homeView);
+router.get("/about-us", customerController.aboutUsView);
 router.get("/booking", customerController.bookingView);
-router.get("/reservation/:tableName", customerController.reservationView);
+router.get("/order/:tableName", customerController.orderView);
 
 module.exports = router;
