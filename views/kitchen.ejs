@@ -1,0 +1,70 @@
+<div class="container">
+  <h1 class="text-center py-1 border-bottom">Orders</h1>
+  <table class="table">
+    <thead>
+      <tr class="table-active">
+        <th scope="col">No</th>
+        <th scope="col">Table</th>
+        <th scope="col">Status</th>
+        <!-- <th scope="col">Description</th> -->
+        <th scope="col">Order</th>
+        <th>Line Total</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% let counter = 1 %> <% data.forEach(order => { %>
+      <tr>
+        <th scope="row"><%= counter %></th>
+        <td><%= order.tableName %></td>
+        <% if(order.status === "Process") { %>
+        <td class="text-muted">
+          <button
+            type="button"
+            class="btn btn-light border border-dark"
+            onclick=""
+          >
+            <%= order.status %>
+          </button>
+        </td>
+        <% } else { %>
+        <td>
+          <button
+            type="button"
+            class="btn btn-light border border-dark"
+            onclick=""
+          >
+            <%= order.status %>
+          </button>
+        </td>
+        <% } %>
+        <td>
+          <% order.purchaseDetail.forEach(product => { %> - <%= product.name %>.
+          <%= product.quantity %>pcs <br />
+          <% }) %>
+        </td>
+        <td>Rp. <%= order.lineTotal %></td>
+        <td>
+          <% if(order.status === "Process") {%>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="window.location.href='/kitchen/<%= order.id %>/clear';"
+          >
+            Cooked
+          </button>
+          <% }else{ %>
+          <button
+            type="button"
+            class="btn btn-dark"
+            onclick="window.location.href='/kitchen/<%= order.id %>/process';"
+          >
+            Process
+          </button>
+          <% } %>
+        </td>
+      </tr>
+      <% counter++ %> <% }); %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,56 @@
+<div class="container">
+  <h1 class="text-center py-1 border-bottom">Menu</h1>
+  <table class="table">
+    <thead>
+      <tr class="table-active">
+        <th scope="col">No</th>
+        <th scope="col">Name</th>
+        <th scope="col">Allergen</th>
+        <!-- <th scope="col">Description</th> -->
+        <th scope="col">Price</th>
+        <th scope="col">Available</th>
+        <th scope="col">
+          <button
+            type="button"
+            class="btn text-dark border border-dark"
+            onclick="window.location.href='/menu/add';"
+          >
+            <i class="fa-solid fa-plus"></i>
+            Add
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% let counter = 1 %> <% data.forEach(menu => { %>
+      <tr>
+        <th scope="row"><%= counter %></th>
+        <td><%= menu.productName %></td>
+        <td><%= menu.allergenIngredients %></td>
+        <td>Rp. <%= menu.price %></td>
+        <% if(menu.available) { %>
+        <td class="">Available</td>
+        <% }else{ %>
+        <td class="text-muted">Unavailable</td>
+        <% } %>
+        <td>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="window.location.href='/menu/<%= menu.id %>/change';"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            class="btn btn-dark"
+            onclick="window.location.href='/menu/<%= menu.id %>/delete';"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+      <% counter++ %> <% }); %>
+    </tbody>
+  </table>
+</div>

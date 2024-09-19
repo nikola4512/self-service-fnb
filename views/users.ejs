@@ -1,0 +1,43 @@
+<div class="container">
+  <h1 class="text-center py-1 border-bottom">Users</h1>
+  <table class="table">
+    <thead>
+      <tr class="table-active">
+        <th scope="col">No</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Role</th>
+        <th scope="col">
+          <button
+            type="button"
+            class="btn text-dark border border-dark"
+            onclick="window.location.href='/users/add';"
+          >
+            <i class="fa-solid fa-plus"></i>
+            Add
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% let id = 1 %> <% data.forEach(user => { %> <% if(user.role !==
+      "owner"){%>
+      <tr>
+        <th><%= id %></th>
+        <td><%= user.name %></td>
+        <td><%= user.email %></td>
+        <td><%= user.role %></td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-dark"
+            onclick="deleteUser('<%= user.id %>')"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+      <% id++ %> <% } %> <% }); %>
+    </tbody>
+  </table>
+</div>

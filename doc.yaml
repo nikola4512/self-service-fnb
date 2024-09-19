@@ -1,0 +1,271 @@
+openapi: 3.0.0
+info:
+  title: "Node JS API Project"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:3000/"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schema:
+    home:
+      type: object
+      properties:
+        status:
+          type: string
+        data:
+          type: array
+    kitchen:
+      type: object
+      properties:
+        status:
+          type: string
+        data:
+          type: array
+    changeOrderStatus:
+      type: object
+      properties:
+        status:
+          type: string
+    errorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        error:
+          type: string
+paths:
+  /:
+    get:
+      tags:
+        - Customer
+      summary: First route in website
+      description: This api is first viewed when visit this website
+      responses:
+        200:
+          description: Redirect to /kitchen if authenticated & /home if unauthenticated
+  /home:
+    get:
+      tags:
+        - Customer
+      summary: Show menus from restaurant
+      description: This api is used to show menus from restaurant
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#components/schema/home"
+              example:
+                {
+                  status: "Success",
+                  data:
+                    [
+                      {
+                        "imageUrl": "https://images.deliveryhero.io/image/fd-my/LH/f6be-hero.jpg",
+                        "productName": "Sate Kacang",
+                        "allergenIngredients": "Kacang",
+                        "description": "Sate sapi dengan bumbu kacang dan nasi.",
+                        "price": 25000,
+                        "available": false,
+                      },
+                      {
+                        "imageUrl": "https://th.bing.com/th/id/OIP.5IsG2eTKCfR_a3dOZATDmAHaHa?rs=1&pid=ImgDetMain",
+                        "productName": "Kerang Hijau Asam Manis",
+                        "allergenIngredients": "Kerang",
+                        "description": "Kerang hijau dengan bumbu asam manis dan nasi.",
+                        "price": 15000,
+                        "available": true,
+                      },
+                    ],
+                }
+        500:
+          description: Error
+          content:
+            application/json:
+              example:
+                {
+                  status: "Error",
+                  error: "ConnectionRefusedError [SequelizeConnectionRefusedError] ...",
+                }
+  /login:
+    post:
+      tags:
+        - Authorization
+      summary: Login users
+      description: This api is used to login users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              {
+                "name": "Nikola Arinanda",
+                "email": "user@example.com",
+                "password": "password123",
+              }
+      responses:
+        200:
+          description: Success and redirect to user main page
+        302:
+          description: False input data
+  /logout:
+    get:
+      tags:
+        - Authorization
+      summary: Logout users
+      description: This api is used to logout authenticated users
+      responses:
+        200:
+          description: Success and redirect to login page
+  /kitchen:
+    get:
+      tags:
+        - Admin
+      summary: Show information about order queue
+      description: This api is used to show information about order queue
+      response:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#components/schema/kitchen"
+              example:
+                {
+                  status: "Success",
+                  data:
+                    [
+                      {
+                        "id": 2,
+                        "bookingId": null,
+                        "reservationId": 1,
+                        "invoiceId": 1,
+                        "status": "Pending",
+                        "purchaseDetail":
+                          [
+                            {
+                              "id": 2,
+                              "name": "Fried Chicken",
+                              "quantity": 1,
+                              "price": 25000,
+                            },
+                            {
+                              "id": 1,
+                              "name": "Ice Tea",
+                              "quantity": 1,
+                              "price": 10000,
+                            },
+                          ],
+                        "lineTotal": 35000,
+                      },
+                      {
+                        "id": 4,
+                        "bookingId": null,
+                        "reservationId": 1,
+                        "invoiceId": 1,
+                        "status": "Process",
+                        "purchaseDetail":
+                          [
+                            {
+                              "id": 3,
+                              "name": "Meat Ball",
+                              "quantity": 1,
+                              "price": 20000,
+                            },
+                            {
+                              "id": 1,
+                              "name": "Ice Tea",
+                              "quantity": 1,
+                              "price": 10000,
+                            },
+                          ],
+                        "lineTotal": 30000,
+                      },
+                    ],
+                }
+        500:
+          description: Error
+          content:
+            application/json:
+              example:
+                {
+                  status: "Error",
+                  error: "ConnectionRefusedError [SequelizeConnectionRefusedError] ...",
+                }
+  /kitchen/{orderId}/process:
+    post:
+      tags:
+        - Admin
+      summary: Change order status to 'Process'
+      description: This api is used to change order status to 'Process'
+      parameters:
+        - in: path
+          name: orderId
+          description: Unique orderId from order
+          required: true
+          schema:
+            type: string
+            example: 123
+      response:
+        200:
+          description: Success
+          content:
+            application/json:
+              example: { status: "Success" }
+        500:
+          description: Error
+          content:
+            application/json:
+              example:
+                {
+                  status: "Error",
+                  error: "ConnectionRefusedError [SequelizeConnectionRefusedError] ...",
+                }
+  /kitchen/{orderId}/done:
+    post:
+      tags:
+        - Admin
+      summary: Change order status to 'Process'
+      description: This api is used to change order status to 'Process'
+      parameters:
+        - in: path
+          name: orderId
+          description: Unique orderId from order
+          required: true
+          schema:
+            type: string
+            example: 123
+      response:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#components/schema/changeOrderStatus"
+              example: { status: "Success" }
+        500:
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#components/schema/errorResponse"
+              example:
+                {
+                  status: "Error",
+                  error: "ConnectionRefusedError [SequelizeConnectionRefusedError] ...",
+                }
