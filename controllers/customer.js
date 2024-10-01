@@ -1,4 +1,5 @@
-const moment = require("moment");
+const momenttz = require("moment-timezone");
+const bcrypt = require("bcryptjs");
 
 const Product = require("../models/Product.js");
 const Table = require("../models/Table.js");
@@ -9,11 +10,7 @@ const Invoice = require("../models/Invoice.js");
 const Order = require("../models/Order.js");
 
 module.exports = {
-  mainView: (req, res) => {
-    // !req.user ? res.redirect("/home") : res.redirect("/kitchen");
-    res.status(200).redirect("/home");
-  },
-  homeView: async (req, res) => {
+  menuView: async (req, res) => {
     try {
       const products = await Product.findAll({
         attributes: [
@@ -27,35 +24,46 @@ module.exports = {
         ],
       });
       res.status(200).json({
-        status: "Success",
+        status: "success",
+        code: 200,
+        message: "request success",
         data: products,
       });
     } catch (error) {
       console.log(error);
       res.status(500).json({
-        status: "Error",
-        error: error,
+        status: "error",
+        code: 500,
+        message: "database connection failed",
+        error: {
+          name: error.name,
+          message: error.message,
+        },
       });
     }
   },
-  orderView: async (req, res) => {
-    const tableName = req.params.tableName;
-    const products = {
-      title: `Reservation Table ${tableName}`,
-      user: req.user != undefined ? req.user : undefined,
-      products: await Product.findAll({
-        attributes: [
-          "id",
-          "imageUrl",
-          "productName",
-          "allergenIngredients",
-          "description",
-          "price",
-          "available",
-        ],
-      }),
-    };
-    res.json(products);
+
+  bookingBasePost: async (req, res) => {
+    {
+      // const discounts = Discount.findAll({
+      //   attributes: [
+      //     'id',
+      //     'name',
+      //     'type',
+      //     'minimumPurchase',
+      //     'maximumPurchase',
+      //     'value'
+      //   ],
+      //   where: {
+      //     minimumPurchase: {
+      //       [Op.lt]: lineTotal
+      //     },
+      //     maximumPurchase: {
+      //       [Op.gt]: lineTotal,
+      //     }
+      //   }
+      // })
+    }
   },
 
   reservationBaseView: async (req, res) => {
@@ -89,66 +97,61 @@ module.exports = {
     }
   },
   reservationBasePost: async (req, res) => {
-    const tableId = await Table.findOne({
-      attributes: ["id"],
-      where: {
-        tableName: req.params.tableName, //
-      },
-    });
-    if (tableId) {
-      try {
-        let lineTotal = 0;
-        req.body.menu.forEach((product) => {
-          totalProductPrice = product.quantity * product.totalProductPrice;
-          lineTotal = lineTotal + totalProductPrice;
-        });
-        // const discounts = Discount.findAll({
-        //   attributes: [
-        //     'id',
-        //     'name',
-        //     'type',
-        //     'minimumPurchase',
-        //     'maximumPurchase',
-        //     'value'
-        //   ],
-        //   where: {
-        //     minimumPurchase: {
-        //       [Op.lt]: lineTotal
-        //     },
-        //     maximumPurchase: {
-        //       [Op.gt]: lineTotal,
-        //     }
-        //   }
-        // })
-        const invoice = await Invoice.create({
-          date: moment().format("YYYY-MM-DD HH:mm:ss"),
-        });
-        const encryptPin = await bcrypt.hash(req.body.pin, 10);
-        const reservation = await Reservation.create({
-          invoiceId: invoice.id,
-          tableId: tableId,
-          status: "pending",
-          reservationPin: encryptPin,
-        });
-        await Order.create({
-          reservationId: reservation.id,
-          status: "pending",
-          purchaseDetail: req.body.menu,
-          lineTotal: lineTotal,
-        });
-        res.json({
-          status: "Success",
-          // redirectUrl:
-        });
-      } catch (error) {
-        res.status(500).json({
-          status: "Error",
-          error: error,
-        });
+    try {
+      const tableId = await Table.findOne({
+        attributes: ["id"],
+        where: {
+          tableName: req.params.tableName,
+        },
+      });
+
+      if (!tableId) {
+        throw new Error("invalid table name.");
       }
-    } else {
-      res.json({
-        status: "Unknown Table Name",
+
+      let lineTotal = 0;
+      req.body.ordered_food.forEach((product) => {
+        lineTotal = lineTotal + product.quantity * product.price;
+      });
+
+      const orderedFood = req.body.ordered_food.map((product) => {
+        product.status = "waiting";
+      });
+
+      const invoice = await Invoice.create({
+        date: momenttz().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss"),
+      });
+
+      const encryptPin = await bcrypt.hash(req.body.pin, 10);
+
+      const reservation = await Reservation.create({
+        invoiceId: invoice.id,
+        tableId: tableId.id,
+        status: "waiting",
+        reservationPin: encryptPin,
+      });
+
+      await Order.create({
+        reservationId: reservation.id,
+        purchaseDetail: JSON.stringify(req.body.ordered_food),
+        lineTotal: lineTotal,
+      });
+
+      res.status(201).json({
+        status: "success",
+        code: 201,
+        message: "post data success.",
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        status: "error",
+        code: 500,
+        message: "can't post data",
+        error: {
+          name: error.name,
+          message: error.message,
+        },
       });
     }
   },

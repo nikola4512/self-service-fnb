@@ -10,9 +10,6 @@ const Order = sequelize.define("orders", {
   reservationId: {
     type: DataTypes.INTEGER,
   },
-  status: {
-    type: DataTypes.STRING,
-  },
   purchaseDetail: {
     type: DataTypes.STRING,
   },

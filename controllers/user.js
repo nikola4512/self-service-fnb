@@ -104,7 +104,7 @@ module.exports = {
         error: error,
       });
     }
-  },
+  }, 
 
   menuView: async (req, res) => {
     try {

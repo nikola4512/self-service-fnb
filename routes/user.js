@@ -17,17 +17,21 @@ router.patch(
   userController.kitchenClear
 );
 
-router.get("/menu", protectRoute, userController.menuView);
-router.get("/menu/add", protectRoute, userController.menuAddView);
+router.get("/owner/menu", protectRoute, userController.menuView);
+router.get("/owner/menu/add", protectRoute, userController.menuAddView);
 router.post(
-  "/menu/add",
+  "/owner/menu/add",
   protectRoute,
   menuUpload.single("image"),
   userController.menuAddPost
 );
-router.get("/menu/:menuId/change", protectRoute, userController.menuChangeView);
+router.get(
+  "/owner/menu/:menuId/change",
+  protectRoute,
+  userController.menuChangeView
+);
 router.post(
-  "/menu/:menuId/change",
+  "/owner/menu/:menuId/change",
   protectRoute,
   menuUpload.single("image"),
   userController.menuChangePost

@@ -13,8 +13,8 @@ module.exports = {
 
   loginUser: (req, res) => {
     passport.authenticate("local", {
-      // successRedirect: "/kitchen?loginsuccess",
       successRedirect: "/kitchen",
+      // successRedirect: "/kitchen?loginsuccess",
       failureRedirect: "/login?error",
     })(req, res);
   },

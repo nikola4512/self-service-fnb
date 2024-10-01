@@ -6,7 +6,7 @@ const path = require("path");
 const database = require("./config/db.js");
 
 const passport = require("passport");
-const { init: initAuth } = require("./config/auth.js");
+const { userLogin: initAuth } = require("./config/auth.js");
 
 const authRoutes = require("./routes/auth.js");
 const customerRoutes = require("./routes/customer.js");
@@ -23,6 +23,7 @@ const swaggerSpec = YAML.parse(fs.readFileSync("doc.yaml", "utf8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.use(express.static(path.join(__dirname, "public")));
